@@ -24,6 +24,7 @@ import { ProductionWorkspaceView } from './components/ProductionWorkspaceView';
 import { SocialPlannerView } from './components/SocialPlannerView';
 import { ClientPortalView } from './components/ClientPortalView';
 import { CreatePostModal } from './components/CreatePostModal';
+import { ContentTheme, PhilippineEvent } from './types';
 
 export default function App() {
   // Local storage persisted state
@@ -53,6 +54,13 @@ export default function App() {
 
   // Modals state
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const [postModalPreset, setPostModalPreset] = useState<{
+    initialDate?: string;
+    initialTheme?: ContentTheme;
+    initialTitle?: string;
+    initialCaption?: string;
+    initialHashtags?: string[];
+  } | null>(null);
   const [selectedPostForDetail, setSelectedPostForDetail] = useState<TaskPost | null>(null);
 
   // Sync state to local storage
@@ -350,10 +358,23 @@ export default function App() {
           <SocialPlannerView
             posts={posts}
             clients={clients}
-            onOpenCreatePost={() => setShowCreatePostModal(true)}
+            onOpenCreatePost={() => {
+              setPostModalPreset(null);
+              setShowCreatePostModal(true);
+            }}
             onSelectPost={(post) => {
               setSelectedPostForDetail(post);
               setActiveView('production_workspace');
+            }}
+            onScheduleForEvent={(event: PhilippineEvent) => {
+              setPostModalPreset({
+                initialDate: event.date,
+                initialTheme: event.suggestedTheme,
+                initialTitle: `${event.name} Campaign`,
+                initialCaption: `${event.campaignHook}\n\n${event.description}`,
+                initialHashtags: event.hashtags,
+              });
+              setShowCreatePostModal(true);
             }}
           />
         )}
@@ -376,8 +397,16 @@ export default function App() {
       {showCreatePostModal && (
         <CreatePostModal
           clients={clients}
-          onClose={() => setShowCreatePostModal(false)}
+          onClose={() => {
+            setShowCreatePostModal(false);
+            setPostModalPreset(null);
+          }}
           onCreatePost={handleCreatePost}
+          initialDate={postModalPreset?.initialDate}
+          initialTheme={postModalPreset?.initialTheme}
+          initialTitle={postModalPreset?.initialTitle}
+          initialCaption={postModalPreset?.initialCaption}
+          initialHashtags={postModalPreset?.initialHashtags}
         />
       )}
 

@@ -59,7 +59,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   const roleLabels: Record<TeamRole, { title: string; subtitle: string; color: string }> = {
     agency_admin: { title: 'Agency Admin', subtitle: 'Executive & Strategy', color: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' },
-    account_manager: { title: 'Account Manager', subtitle: 'Client Success & CRM', color: 'bg-sky-500/20 text-sky-400 border-sky-500/30' },
+    account_manager: { title: 'Account Manager', subtitle: 'Althea Cruz (Client Success)', color: 'bg-sky-500/20 text-sky-400 border-sky-500/30' },
+    social_media_manager: { title: 'Social Media Manager', subtitle: 'Joshua Bernardo (SMM)', color: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
     copywriter: { title: 'Copywriter', subtitle: 'Mikaela Sison (Content)', color: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
     designer: { title: 'Visual Designer', subtitle: 'Angelo Dizon (Creative)', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
     qa_specialist: { title: 'Brand QA Specialist', subtitle: 'Patricia Lim (Reviewer)', color: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },

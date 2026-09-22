@@ -69,10 +69,11 @@ export const ProductionWorkspaceView: React.FC<ProductionWorkspaceViewProps> = (
 
     const authorMap: Record<TeamRole, string> = {
       agency_admin: 'Agency Director',
-      account_manager: 'Althea Cruz',
-      copywriter: 'Mikaela Sison',
-      designer: 'Angelo Dizon',
-      qa_specialist: 'Patricia Lim',
+      account_manager: 'Althea Cruz (Account Manager)',
+      social_media_manager: 'Joshua Bernardo (Social Media Mgr)',
+      copywriter: 'Mikaela Sison (Copywriter)',
+      designer: 'Angelo Dizon (Visual Designer)',
+      qa_specialist: 'Patricia Lim (Brand QA)',
       client_stakeholder: 'Client Stakeholder',
     };
 
@@ -159,6 +160,68 @@ export const ProductionWorkspaceView: React.FC<ProductionWorkspaceViewProps> = (
             <Plus className="w-3.5 h-3.5" />
             <span>New Task Post</span>
           </button>
+        </div>
+      </div>
+
+      {/* Team Collaboration Roster & Approval Rule Callout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Roles Roster */}
+        <div className="lg:col-span-8 bg-[#111827]/80 border border-slate-800 rounded-2xl p-4">
+          <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
+            <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2 font-['Outfit']">
+              <User className="w-3.5 h-3.5 text-indigo-400" />
+              Social Media Project Team Roster & Roles
+            </span>
+            <span className="text-[10px] text-slate-400">5 Assigned Specialists</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px]">
+            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <span className="text-[9px] font-bold uppercase text-emerald-400 block">Visual Designer</span>
+              <div className="font-semibold text-white">Angelo Dizon</div>
+              <div className="text-[10px] text-slate-400">Canva / Figma Lead</div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <span className="text-[9px] font-bold uppercase text-amber-400 block">Copywriter</span>
+              <div className="font-semibold text-white">Mikaela Sison</div>
+              <div className="text-[10px] text-slate-400">Taglish Copy & Hooks</div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <span className="text-[9px] font-bold uppercase text-purple-400 block">QA Specialist</span>
+              <div className="font-semibold text-white">Patricia Lim</div>
+              <div className="text-[10px] text-slate-400">Brand & DTI Compliance</div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <span className="text-[9px] font-bold uppercase text-teal-400 block">Social Media Mgr</span>
+              <div className="font-semibold text-white">Joshua Bernardo</div>
+              <div className="text-[10px] text-slate-400">PHT Scheduler & Growth</div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <span className="text-[9px] font-bold uppercase text-sky-400 block">Account Manager</span>
+              <div className="font-semibold text-white">Althea Cruz</div>
+              <div className="text-[10px] text-slate-400">Client Portal Liaison</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mandatory Client Sign-Off Rule */}
+        <div className="lg:col-span-4 bg-gradient-to-br from-indigo-950/40 via-purple-950/20 to-slate-900 border border-indigo-500/30 rounded-2xl p-4 flex flex-col justify-between">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-300">
+              <ShieldCheck className="w-4 h-4 text-indigo-400" />
+              <span>Mandatory Client Sign-Off Enforced</span>
+            </div>
+            <p className="text-[11px] text-slate-300 leading-relaxed">
+              All tasks completed by Copywriter, Designer, and QA must receive explicit client approval inside the Client Portal before being scheduled or posted.
+            </p>
+          </div>
+          <div className="mt-2 text-[10px] font-mono text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20">
+            Stages 1-4 (Team) → Stage 5 (Client Portal) → Stages 6-7 (Live)
+          </div>
         </div>
       </div>
 

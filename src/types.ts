@@ -1,10 +1,32 @@
 export type TeamRole = 
   | 'agency_admin' 
   | 'account_manager' 
+  | 'social_media_manager'
   | 'copywriter' 
   | 'designer' 
   | 'qa_specialist' 
   | 'client_stakeholder';
+
+export type ContentTheme = 
+  | 'lifestyle' 
+  | 'business' 
+  | 'entertainment' 
+  | 'promotions' 
+  | 'educational' 
+  | 'culture_holiday';
+
+export interface PhilippineEvent {
+  id: string;
+  name: string;
+  date: string; // YYYY-MM-DD
+  month: number;
+  day: number;
+  type: 'regular_holiday' | 'special_non_working' | 'cultural_festival' | 'trending_topic';
+  description: string;
+  campaignHook: string;
+  suggestedTheme: ContentTheme;
+  hashtags: string[];
+}
 
 export type LeadSource = 
   | 'Facebook Ads' 
@@ -117,6 +139,7 @@ export interface TaskPost {
   mediaUrls: string[];
   mediaType: 'image' | 'carousel' | 'video';
   platforms: SocialPlatform[];
+  theme: ContentTheme;
   status: PostStatus;
   scheduledDate: string; // YYYY-MM-DD
   scheduledTime: string; // HH:mm
@@ -124,6 +147,8 @@ export interface TaskPost {
   assignedCopywriter: string;
   assignedDesigner: string;
   assignedQA: string;
+  assignedSocialMediaManager?: string;
+  assignedAccountManager?: string;
   clientFeedbackNotes?: string;
   internalComments: PostComment[];
   revisionRound: number;
