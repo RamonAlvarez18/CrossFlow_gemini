@@ -168,8 +168,13 @@ export interface TaskPost {
 
 export type ActiveView = 
   | 'dashboard'
-  | 'pipeline'
-  | 'invoices_onboarding'
-  | 'production_workspace'
   | 'social_planner'
+  | 'composer'
+  | 'unified_inbox'
+  | 'pipeline'
+  | 'clients'
+  | 'production_workspace'
+  | 'invoices_onboarding'
+  | 'analytics'
+  | 'settings'
   | 'client_portal';

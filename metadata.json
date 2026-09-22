@@ -2,5 +2,7 @@
   "name": "CrossFlow | Enterprise Agency Management",
   "description": "Enterprise agency workflow platform combining social media publishing, client approval portal, lead pipeline CRM, and multi-role production workspace tailored for Philippine agencies.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

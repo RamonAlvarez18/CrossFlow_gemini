@@ -7,7 +7,9 @@ import {
   ClientProfile, 
   TaskPost, 
   PipelineStage, 
-  PostStatus 
+  PostStatus,
+  ContentTheme, 
+  PhilippineEvent 
 } from './types';
 import { 
   initialClients, 
@@ -15,16 +17,19 @@ import {
   initialInvoices, 
   initialPosts 
 } from './data/mockData';
-import { Header } from './components/Header';
-import { Navigation } from './components/Navigation';
+import { Sidebar } from './components/Sidebar';
+import { TopHeader } from './components/TopHeader';
 import { DashboardView } from './components/DashboardView';
 import { PipelineView } from './components/PipelineView';
 import { InvoicesOnboardingView } from './components/InvoicesOnboardingView';
 import { ProductionWorkspaceView } from './components/ProductionWorkspaceView';
 import { SocialPlannerView } from './components/SocialPlannerView';
 import { ClientPortalView } from './components/ClientPortalView';
+import { UnifiedInboxView } from './components/UnifiedInboxView';
+import { AnalyticsView } from './components/AnalyticsView';
+import { SettingsView } from './components/SettingsView';
+import { ClientsView } from './components/ClientsView';
 import { CreatePostModal } from './components/CreatePostModal';
-import { ContentTheme, PhilippineEvent } from './types';
 
 export default function App() {
   // Local storage persisted state
@@ -51,6 +56,7 @@ export default function App() {
   const [currentRole, setCurrentRole] = useState<TeamRole>('agency_admin');
   const [activeView, setActiveView] = useState<ActiveView>('dashboard');
   const [selectedClientId, setSelectedClientId] = useState<string>('client-1');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Modals state
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
@@ -101,7 +107,6 @@ export default function App() {
   };
 
   const handleConvertToInvoice = (lead: Lead) => {
-    // Check if an invoice already exists
     const existing = invoices.find(i => i.companyName.toLowerCase() === lead.company.toLowerCase());
     if (existing) {
       setActiveView('invoices_onboarding');
@@ -129,7 +134,6 @@ export default function App() {
     };
 
     setInvoices(prev => [newInvoice, ...prev]);
-    // Move lead to closed_won
     setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, stage: 'closed_won' } : l));
     setActiveView('invoices_onboarding');
   };
@@ -277,154 +281,193 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F17] text-slate-100 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
+    <div className="min-h-screen bg-[#080D1A] text-slate-100 flex font-['Plus_Jakarta_Sans',sans-serif]">
       
-      {/* Top Application Header */}
-      <Header
-        currentRole={currentRole}
-        setCurrentRole={setCurrentRole}
+      {/* Sleek Left Sidebar */}
+      <Sidebar
         activeView={activeView}
         setActiveView={setActiveView}
+        currentRole={currentRole}
+        setCurrentRole={setCurrentRole}
         clients={clients}
         selectedClientId={selectedClientId}
         setSelectedClientId={setSelectedClientId}
         pendingClientApprovalCount={pendingClientApprovalCount}
-        unreadNotesCount={1}
-        onOpenCreatePost={() => setShowCreatePostModal(true)}
+        unreadMessagesCount={14}
+        onOpenComposer={() => {
+          setPostModalPreset(null);
+          setShowCreatePostModal(true);
+        }}
+        isOpenMobile={isMobileMenuOpen}
+        onCloseMobile={() => setIsMobileMenuOpen(false)}
       />
 
-      {/* Primary Navigation */}
-      <Navigation
-        activeView={activeView}
-        setActiveView={setActiveView}
-        pendingClientApprovalCount={pendingClientApprovalCount}
-        pendingInternalQACount={pendingInternalQACount}
-        unpaidInvoiceCount={unpaidInvoiceCount}
-      />
-
-      {/* Main View Area */}
-      <main className="flex-1 pb-16">
-        {activeView === 'dashboard' && (
-          <DashboardView
-            currentRole={currentRole}
-            leads={leads}
-            invoices={invoices}
-            clients={clients}
-            posts={posts}
-            setActiveView={setActiveView}
-            onOpenCreatePost={() => setShowCreatePostModal(true)}
-            onSelectPost={(post) => {
-              setSelectedPostForDetail(post);
-              setActiveView('production_workspace');
-            }}
-            onOpenNewLeadModal={() => setActiveView('pipeline')}
-          />
-        )}
-
-        {activeView === 'pipeline' && (
-          <PipelineView
-            leads={leads}
-            onUpdateLeadStage={handleUpdateLeadStage}
-            onAddLead={handleAddLead}
-            onConvertToInvoice={handleConvertToInvoice}
-          />
-        )}
-
-        {activeView === 'invoices_onboarding' && (
-          <InvoicesOnboardingView
-            invoices={invoices}
-            clients={clients}
-            onPayInvoice={handlePayInvoice}
-            onCompleteOnboarding={handleCompleteOnboarding}
-            setActiveView={setActiveView}
-            setSelectedClientId={setSelectedClientId}
-          />
-        )}
-
-        {activeView === 'production_workspace' && (
-          <ProductionWorkspaceView
-            posts={posts}
-            clients={clients}
-            currentRole={currentRole}
-            onUpdatePostStatus={handleUpdatePostStatus}
-            onUpdatePost={handleUpdatePost}
-            onOpenCreatePost={() => setShowCreatePostModal(true)}
-            selectedPost={selectedPostForDetail}
-            setSelectedPost={setSelectedPostForDetail}
-          />
-        )}
-
-        {activeView === 'social_planner' && (
-          <SocialPlannerView
-            posts={posts}
-            clients={clients}
-            onOpenCreatePost={() => {
-              setPostModalPreset(null);
-              setShowCreatePostModal(true);
-            }}
-            onSelectPost={(post) => {
-              setSelectedPostForDetail(post);
-              setActiveView('production_workspace');
-            }}
-            onScheduleForEvent={(event: PhilippineEvent) => {
-              setPostModalPreset({
-                initialDate: event.date,
-                initialTheme: event.suggestedTheme,
-                initialTitle: `${event.name} Campaign`,
-                initialCaption: `${event.campaignHook}\n\n${event.description}`,
-                initialHashtags: event.hashtags,
-              });
-              setShowCreatePostModal(true);
-            }}
-          />
-        )}
-
-        {activeView === 'client_portal' && (
-          <ClientPortalView
-            clients={clients}
-            selectedClientId={selectedClientId}
-            setSelectedClientId={setSelectedClientId}
-            posts={posts}
-            invoices={invoices}
-            onApprovePost={handleClientApprovePost}
-            onRequestRevisions={handleClientRequestRevisions}
-            onSendClientNote={handleSendClientNote}
-          />
-        )}
-      </main>
-
-      {/* Create / Compose Post Modal */}
-      {showCreatePostModal && (
-        <CreatePostModal
+      {/* Main Content Area */}
+      <div className="flex-1 lg:pl-64 flex flex-col min-w-0">
+        {/* Top Header */}
+        <TopHeader
+          currentRole={currentRole}
+          setCurrentRole={setCurrentRole}
+          activeView={activeView}
+          setActiveView={setActiveView}
           clients={clients}
-          onClose={() => {
-            setShowCreatePostModal(false);
+          selectedClientId={selectedClientId}
+          setSelectedClientId={setSelectedClientId}
+          pendingClientApprovalCount={pendingClientApprovalCount}
+          unreadMessagesCount={14}
+          onOpenCreatePost={() => {
             setPostModalPreset(null);
+            setShowCreatePostModal(true);
           }}
-          onCreatePost={handleCreatePost}
-          initialDate={postModalPreset?.initialDate}
-          initialTheme={postModalPreset?.initialTheme}
-          initialTitle={postModalPreset?.initialTitle}
-          initialCaption={postModalPreset?.initialCaption}
-          initialHashtags={postModalPreset?.initialHashtags}
+          onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
         />
-      )}
 
-      {/* Enterprise Agency Footer */}
-      <footer className="border-t border-slate-800/80 bg-[#0B0F17] py-4 px-6 text-xs text-slate-400">
-        <div className="max-w-[1700px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-200 font-['Outfit']">CrossFlow Enterprise Agency Management</span>
-            <span>•</span>
-            <span>Tailored for Philippine Digital Agencies & Creators</span>
-          </div>
-          <div className="flex items-center gap-4 text-[11px]">
-            <span>Supported Gateways: <strong>GCash • Maya • BDO • BPI • QR Ph</strong></span>
-            <span>•</span>
-            <span className="text-emerald-400">PHT Timezone Synchronized (UTC+8)</span>
-          </div>
-        </div>
-      </footer>
+        {/* View Content */}
+        <main className="flex-1 px-6 pb-12 overflow-y-auto">
+          {activeView === 'dashboard' && (
+            <DashboardView
+              currentRole={currentRole}
+              leads={leads}
+              invoices={invoices}
+              clients={clients}
+              posts={posts}
+              setActiveView={setActiveView}
+              onOpenCreatePost={() => {
+                setPostModalPreset(null);
+                setShowCreatePostModal(true);
+              }}
+              onSelectPost={(post) => {
+                setSelectedPostForDetail(post);
+                setActiveView('production_workspace');
+              }}
+              onApprovePost={handleClientApprovePost}
+            />
+          )}
+
+          {activeView === 'social_planner' && (
+            <SocialPlannerView
+              posts={posts}
+              clients={clients}
+              onOpenCreatePost={() => {
+                setPostModalPreset(null);
+                setShowCreatePostModal(true);
+              }}
+              onSelectPost={(post) => {
+                setSelectedPostForDetail(post);
+                setActiveView('production_workspace');
+              }}
+              onScheduleForEvent={(event: PhilippineEvent) => {
+                setPostModalPreset({
+                  initialDate: event.date,
+                  initialTheme: event.suggestedTheme,
+                  initialTitle: `${event.name} Campaign`,
+                  initialCaption: `${event.campaignHook}\n\n${event.description}`,
+                  initialHashtags: event.hashtags,
+                });
+                setShowCreatePostModal(true);
+              }}
+            />
+          )}
+
+          {activeView === 'unified_inbox' && (
+            <UnifiedInboxView />
+          )}
+
+          {activeView === 'pipeline' && (
+            <PipelineView
+              leads={leads}
+              onUpdateLeadStage={handleUpdateLeadStage}
+              onAddLead={handleAddLead}
+              onConvertToInvoice={handleConvertToInvoice}
+            />
+          )}
+
+          {activeView === 'clients' && (
+            <ClientsView
+              clients={clients}
+              posts={posts}
+              invoices={invoices}
+              onSelectClientForPortal={(id) => {
+                setSelectedClientId(id);
+                setCurrentRole('client_stakeholder');
+              }}
+              setActiveView={setActiveView}
+              onOpenCreatePost={() => {
+                setPostModalPreset(null);
+                setShowCreatePostModal(true);
+              }}
+            />
+          )}
+
+          {activeView === 'production_workspace' && (
+            <ProductionWorkspaceView
+              posts={posts}
+              clients={clients}
+              currentRole={currentRole}
+              onUpdatePostStatus={handleUpdatePostStatus}
+              onUpdatePost={handleUpdatePost}
+              onOpenCreatePost={() => {
+                setPostModalPreset(null);
+                setShowCreatePostModal(true);
+              }}
+              selectedPost={selectedPostForDetail}
+              setSelectedPost={setSelectedPostForDetail}
+            />
+          )}
+
+          {activeView === 'invoices_onboarding' && (
+            <InvoicesOnboardingView
+              invoices={invoices}
+              clients={clients}
+              onPayInvoice={handlePayInvoice}
+              onCompleteOnboarding={handleCompleteOnboarding}
+              setActiveView={setActiveView}
+              setSelectedClientId={setSelectedClientId}
+            />
+          )}
+
+          {activeView === 'analytics' && (
+            <AnalyticsView />
+          )}
+
+          {activeView === 'settings' && (
+            <SettingsView
+              currentRole={currentRole}
+              setCurrentRole={setCurrentRole}
+            />
+          )}
+
+          {activeView === 'client_portal' && (
+            <ClientPortalView
+              clients={clients}
+              selectedClientId={selectedClientId}
+              setSelectedClientId={setSelectedClientId}
+              posts={posts}
+              invoices={invoices}
+              onApprovePost={handleClientApprovePost}
+              onRequestRevisions={handleClientRequestRevisions}
+              onSendClientNote={handleSendClientNote}
+            />
+          )}
+        </main>
+
+        {/* Global Modal: Create / Compose Post */}
+        {showCreatePostModal && (
+          <CreatePostModal
+            clients={clients}
+            onClose={() => {
+              setShowCreatePostModal(false);
+              setPostModalPreset(null);
+            }}
+            onCreatePost={handleCreatePost}
+            initialDate={postModalPreset?.initialDate}
+            initialTheme={postModalPreset?.initialTheme}
+            initialTitle={postModalPreset?.initialTitle}
+            initialCaption={postModalPreset?.initialCaption}
+            initialHashtags={postModalPreset?.initialHashtags}
+          />
+        )}
+      </div>
 
     </div>
   );
